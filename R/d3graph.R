@@ -7,10 +7,11 @@
 #' @param height Height of the widget
 #' @param elementId Element ID for the widget
 #' @param show_labels Logical, whether to show node labels
+#' @param dark_theme Logical, whether to use dark theme
 #'
 #' @import htmlwidgets
 #' @export
-d3graph <- function(g, width = NULL, height = NULL, elementId = NULL, show_labels = TRUE) {
+d3graph <- function(g, width = NULL, height = NULL, elementId = NULL, show_labels = TRUE, dark_theme = FALSE) {
   if (!inherits(g, "igraph")) {
     stop("g must be an igraph object")
   }
@@ -67,7 +68,8 @@ d3graph <- function(g, width = NULL, height = NULL, elementId = NULL, show_label
     nodes = nodes,
     links = links,
     directed = directed,
-    show_labels = show_labels
+    show_labels = show_labels,
+    dark_theme = dark_theme
   )
   
   # Create widget

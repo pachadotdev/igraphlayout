@@ -22,6 +22,8 @@ way to interactively edit graph layouts visually and directly within R.
 2. Move nodes around with your mouse to create custom layouts.
 3. Click "Ready" to save node coordinates back to the graph object.
 
+You can zoom in/out with the mouse wheel and drag the full network by clicking and dragging on the background.
+
 ## Installation
 
 ```r

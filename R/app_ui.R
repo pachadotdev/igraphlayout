@@ -17,7 +17,7 @@ app_ui <- function(request) {
           "Random Seed for Layout",
           value = 42,
           min = 1,
-          max = 100,
+          max = 10000,
           step = 1
         ),
         selectInput(
@@ -36,6 +36,7 @@ app_ui <- function(request) {
         actionButton("generate", "Apply Layout", class = "btn-primary"),
         hr(),
         checkboxInput("show_labels", "Show node labels", value = TRUE),
+        checkboxInput("dark_theme", "Use dark theme", value = FALSE),
         hr(),
         actionButton("ready", "Ready - Save Layout", class = "btn-success"),
         hr(),
@@ -67,8 +68,68 @@ golem_add_external_resources <- function() {
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "igraphlayout"
-    )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
+    ),
+    # Add custom CSS for dark theme
+    tags$style(HTML("
+      body.dark-theme {
+        background-color: #1f1f1f !important;
+        color: #e0e0e0 !important;
+      }
+      body.dark-theme .form-control,
+      body.dark-theme .selectize-input,
+      body.dark-theme .selectize-dropdown {
+        background-color: #2a2a2a !important;
+        color: #e0e0e0 !important;
+        border-color: #444 !important;
+      }
+      body.dark-theme h1,
+      body.dark-theme h2,
+      body.dark-theme h3,
+      body.dark-theme label,
+      body.dark-theme p {
+        color: #e0e0e0 !important;
+      }
+      body.dark-theme .checkbox label {
+        color: #e0e0e0 !important;
+      }
+      body.dark-theme hr {
+        border-top-color: #444 !important;
+      }
+      
+      /* Center notifications */
+      #shiny-notification-panel {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        max-width: 500px;
+      }
+      
+      .shiny-notification {
+        font-size: 16px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+    ")),
+    # Add JavaScript to toggle dark theme class on body
+    tags$script(HTML("
+      $(document).ready(function() {
+        // Set initial theme
+        if ($('#dark_theme').is(':checked')) {
+          $('body').addClass('dark-theme');
+        }
+        
+        // Listen for checkbox changes
+        $('#dark_theme').on('change', function() {
+          if ($(this).is(':checked')) {
+            $('body').addClass('dark-theme');
+          } else {
+            $('body').removeClass('dark-theme');
+          }
+        });
+      });
+    "))
   )
 }

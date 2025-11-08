@@ -47,8 +47,8 @@ app_server <- function(input, output, session) {
     
     # The graph object contains all necessary information
     # including layout coordinates if they've been set
-    # Only render once - don't re-render on label toggle
-    d3graph(graph_data$g, height = 600, show_labels = TRUE)
+    # Pass initial theme setting (FALSE = light theme by default)
+    d3graph(graph_data$g, height = 600, show_labels = TRUE, dark_theme = FALSE)
   })
   
   # Handle label visibility toggle without re-rendering
@@ -56,6 +56,14 @@ app_server <- function(input, output, session) {
     session$sendCustomMessage(
       type = "toggleLabels_graph_viz",
       message = list(show = input$show_labels)
+    )
+  })
+  
+  # Handle theme toggle
+  observeEvent(input$dark_theme, {
+    session$sendCustomMessage(
+      type = "setTheme_graph_viz",
+      message = list(dark = input$dark_theme)
     )
   })
   
@@ -147,11 +155,14 @@ app_server <- function(input, output, session) {
     igraph::V(graph_data$g)$x <- coords[, 1]
     igraph::V(graph_data$g)$y <- coords[, 2]
     
-    # Show notification
+    # Show notification in the center of the page
     showNotification(
-      "Layout saved! Node coordinates stored in graph attributes 'x' and 'y'.",
+      "Layout saved! Node coordinates stored in graph attributes 'x' and 'y'. You can close this page and go back to the R session.",
       type = "message",
-      duration = 3
+      duration = 10,
+      closeButton = FALSE,
+      id = "save_notification",
+      session = session
     )
     
     # Stop the app after a short delay

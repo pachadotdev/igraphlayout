@@ -19,7 +19,8 @@ HTMLWidgets.widget({
         svg = d3.select(el)
           .append('svg')
           .attr('width', '100%')
-          .attr('height', height);
+          .attr('height', height)
+          .attr('class', 'graph-svg');  // Add class for styling
         
         const svgWidth = el.offsetWidth;
         const svgHeight = height;
@@ -118,6 +119,13 @@ HTMLWidgets.widget({
           .style('pointer-events', 'none')
           .style('display', x.show_labels ? 'block' : 'none');
         
+        // Apply initial theme
+        if (x.dark_theme) {
+          svg.style('background-color', '#1f1f1f');
+          link.attr('stroke', '#666');
+          text.style('fill', '#e0e0e0');
+        }
+        
         // Create force simulation with minimal forces
         simulation = d3.forceSimulation(nodes)
           .force('link', d3.forceLink(links).id(d => d.id).distance(100).strength(0.1))
@@ -210,6 +218,23 @@ HTMLWidgets.widget({
           Shiny.addCustomMessageHandler('toggleLabels_' + el.id, function(message) {
             if (text) {
               text.style('display', message.show ? 'block' : 'none');
+            }
+          });
+          
+          // Handler for theme changes
+          Shiny.addCustomMessageHandler('setTheme_' + el.id, function(message) {
+            if (svg) {
+              if (message.dark) {
+                // Dark theme
+                svg.style('background-color', '#1f1f1f');
+                if (link) link.attr('stroke', '#666');
+                if (text) text.style('fill', '#e0e0e0');
+              } else {
+                // Light theme
+                svg.style('background-color', 'transparent');
+                if (link) link.attr('stroke', '#999');
+                if (text) text.style('fill', '#000');
+              }
             }
           });
         }
